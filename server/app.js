@@ -6,11 +6,11 @@ const { urlencoded } = require('body-parser');
 
 const PORT = 3500;
 const app = express();
-const uri = `mongodb+srv://${}:${}@cluster0.eoos6vz.mongodb.net/Ecommerce?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://antonykibet059:123Acosta@cluster0.eoos6vz.mongodb.net/Ecommerce?retryWrites=true&w=majority`;
 const client = new MongoClient(uri);
 let db;
-
-app.use(express.static('./public'))
+  
+app.use(express.static('Public'))
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
 
@@ -18,7 +18,7 @@ app.get('/',(req,res)=>{
     res.sendFile(path.join(__dirname,'index.html'))
 })
 
-app.post('/list',async(req,res)=>{
+app.post('/login',async(req,res)=>{
     try {
         const {pass,username} = req.body
         const admin = await db.collection('admin')
@@ -34,9 +34,13 @@ app.post('/list',async(req,res)=>{
     }
 })
 
-function auth(){
-
-}
+app.get('/users',async(req,res)=>{
+    const usersCollection = await db.collection('Users');
+    const usersArray = await  usersCollection.find().toArray();
+    console.log(usersArray)
+    res.json(usersArray)
+})
+app.get('/addUsers',(req,res)=>res.sendFile(__dirname,'addUser.html'))
 async function dbInit(){
     await client.connect();
     db = await client.db('Ecommerce');
