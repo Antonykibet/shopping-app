@@ -15,7 +15,7 @@ app.use(express.urlencoded({extended:false}));
 app.use(express.json());
 
 app.get('/',(req,res)=>{
-    res.sendFile(path.join(__dirname,'index.html'))
+    res.sendFile(path.join(__dirname,'admin','index.html'))
 })
 
 app.post('/login',async(req,res)=>{
@@ -24,9 +24,9 @@ app.post('/login',async(req,res)=>{
         const admin = await db.collection('admin')
         const {password} = await admin.findOne({username:username})
         if(pass==password){
-            res.sendFile(path.join(__dirname,'dash.html'))
+            res.sendFile(path.join(__dirname,'admin','dash.html'))
         }else{
-            res.sendFile(path.join(__dirname,'unauth.html'))
+            res.sendFile(path.join(__dirname,'admin','unauth.html'))
         }
 
     } catch (error) {
@@ -37,10 +37,17 @@ app.post('/login',async(req,res)=>{
 app.get('/users',async(req,res)=>{
     const usersCollection = await db.collection('Users');
     const usersArray = await  usersCollection.find().toArray();
-    console.log(usersArray)
     res.json(usersArray)
 })
-app.get('/addUsers',(req,res)=>res.sendFile(__dirname,'addUser.html'))
+
+app.get('/addUsers',(req,res)=>res.sendFile(__dirname+'/admin'+'/addUser.html'));
+app.post('/addUsers',async(req,res)=>{
+    const {name, age} = req.body;
+    const usersCollection = await db.collection('Users');
+    await  usersCollection.insertOne({name:name,age:age})
+    res.send('<h1>Success</h1>')
+})
+
 async function dbInit(){
     await client.connect();
     db = await client.db('Ecommerce');
