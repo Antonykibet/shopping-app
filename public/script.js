@@ -14,9 +14,18 @@ function addUser(name){
         let updateDiv = document.createElement('div');
         let delDiv = document.createElement('div');
         nameDiv.innerHTML = `<h4>${name}</h4>`
-        delDiv.innerHTML = '<button>Update Button</button>'
-        updateDiv.innerHTML = '<button>Delete Button</button>'
-        //updateDiv.addEventListener('click',updateFunc)
+        delDiv.innerHTML = `<form action='/delete' method='post'>
+        <input style='display:none' type='text' name='name' value='${name}'>
+        <button type='submit'>Delete Button</button>
+        </form`
+        updateDiv.innerHTML = '<button>Update Button</button>'
+        updateDiv.addEventListener('click',()=>{
+            nameDiv.innerHTML = `<form action ='/update' method='post'>
+                    <input type='text' name='updvalue' value='${name}' >
+                    <input style='display:none' type='text' name='name' value='${name}'>
+                    <button type='submit'>Submit</button>
+                </form>`
+        })
         bigDiv.append(nameDiv,updateDiv,delDiv);
         bigDiv.style.display='flex'
         bigDiv.style.width='80%'
@@ -25,6 +34,5 @@ function addUser(name){
 }
 
 function updateFunc(){
-    let input = document.createElement('input')
-    input.setAttribute('value','molis')
+    
 }

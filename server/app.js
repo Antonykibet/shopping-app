@@ -41,11 +41,25 @@ app.get('/users',async(req,res)=>{
 })
 
 app.get('/addUsers',(req,res)=>res.sendFile(__dirname+'/admin'+'/addUser.html'));
+app.post('/delete',async(req,res)=>{
+    const {name} = req.body
+    const usersCollection = await db.collection('Users');
+    const usersArray = await  usersCollection.deleteOne({name:name})
+    res.sendFile(path.join(__dirname,'admin','dash.html'))
+})
 app.post('/addUsers',async(req,res)=>{
     const {name, age} = req.body;
     const usersCollection = await db.collection('Users');
     await  usersCollection.insertOne({name:name,age:age})
-    res.send('<h1>Success</h1>')
+    res.sendFile(path.join(__dirname,'admin','dash.html'))
+    
+})
+app.post('/update',async(req,res)=>{
+    const {updvalue, name} = req.body
+    const usersCollection = await db.collection('Users');
+    await usersCollection.updateOne({name:name},{$set:{name:updvalue}})
+    res.sendFile(path.join(__dirname,'admin','dash.html'))
+    console.log(req.body)
 })
 
 async function dbInit(){
@@ -55,6 +69,6 @@ async function dbInit(){
 }
 
 app.listen(PORT, async ()=>{
-    console.log(`Server listening at port:${PORT}`);
     await dbInit();
+    console.log(`Server listening at port:${PORT}`);
 })
